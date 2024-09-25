@@ -7,56 +7,147 @@
 </head>
 <body>
     <table style="border: 1px solid black; border-collapse: collapse;">
-        
-        <?php
 
-            $filas = 7;
-            $columnas = 7;
-            $espacio = " ";
+    <?php
 
-            for($i = 0; $i <= $filas; $i++){
-                if ($i != 0 ){
+    $filas = 10;
+    $columnas = 10;
+    $espacio = " ";
+    $tabla = array();
 
-                    echo "<tr>";
-
-                        for($j = 0; $j <= $columnas; $j++){
-                            if ($j == 0){
-                                $chrx = chr(64 + $i);
-                                echo "<td style='border: 1px solid black; border-collapse: collapse;'>$chrx </td>" ;  
-                            }
-
-                            else {
-                                echo "<td style='border: 1px solid black; border-collapse: collapse;'>$espacio </td>" ;
-                            }
-                        }
-
-                    echo "</tr>";
+    for ($i = 0; $i <= $filas; $i++) {
+        for ($j = 0; $j <= $columnas; $j++) {
+            if ($i == 0) {
+                if ($j == 0) {
+                    $tabla[$i][$j] = $espacio;
+                } else {
+                    $tabla[$i][$j] = $j;
                 }
-                    
-                else {
-
-                    echo "<tr>";
-
-                        for($j = 0; $j <= $columnas; $j++){
-
-                            if ($j == 0 ) {
-                                echo "<td style='border: 1px solid black; border-collapse: collapse;'> $espacio</td>" ;
-                            }
-
-                            else {
-                                echo "<td style='border: 1px solid black; border-collapse: collapse;'> $j</td>" ;
-                            }
-                            
-                        }
-
-                    echo "</tr>";
+            } else {
+                if ($j == 0) {
+                    $chrx = chr(64 + $i);
+                    $tabla[$i][$j] = $chrx;
+                } else {
+                    $tabla[$i][$j] = $espacio;
                 }
-                    
             }
-        
-        ?>
+        }
+    }
 
-    </table>
+    $fragata = 1;
+    $submarí = 2;
+    $destructor = 3;
+    $portaavions = 4;
+    $barcos = array($fragata, $submarí, $destructor, $portaavions);
+
+    for ($i = 0; $i <= count($barcos)-1; $i++){
+
+        $salirPosicion = true;
+        while ($salirPosicion){
+            $posicionY = mt_rand(1, 10);
+            $posicionZ = mt_rand(1, 10);
+            $bien = true; 
+
+            if ($tabla[$posicionY][$posicionZ] == $espacio ){
+                if ($barcos[$i] != 1){
+                    $direccion = mt_rand(0, 3);
+                    switch ($direccion) {
+                        case 0: 
+                            if ($posicionY - ($barcos[$i] - 1) < 1) { 
+                                continue;
+                            }
+                            for ($j = 0; $j < $barcos[$i]; $j++) {
+                                if ($tabla[$posicionY - $j][$posicionZ] != $espacio) {
+                                    $bien = false; // No hay espacio
+                                    break;
+                                }
+                            }
+                            if ($bien) {
+                                for ($j = 0; $j < $barcos[$i]; $j++) {
+                                    $tabla[$posicionY - $j][$posicionZ] = "B".$barcos[$i]; 
+                                }
+                                $salirPosicion = false; 
+                            }
+                            break;
+
+                        case 1:
+                            if ($posicionZ + ($barcos[$i] - 1) > 10) {
+                                continue;
+                            }
+                            for ($j = 0; $j < $barcos[$i]; $j++) {
+                                if ($tabla[$posicionY][$posicionZ + $j] != $espacio) {
+                                    $bien = false;
+                                    break;
+                                }
+                            }
+                            if ($bien) {
+                                for ($j = 0; $j < $barcos[$i]; $j++) {
+                                    $tabla[$posicionY][$posicionZ + $j] = "B".$barcos[$i];
+                                }
+                                $salirPosicion = false;
+                            }
+                            break;
+
+                        case 2: // Vertical hacia abajo
+                            if ($posicionY + ($barcos[$i] - 1) > 10) {
+                                continue;
+                            }
+                            for ($j = 0; $j < $barcos[$i]; $j++) {
+                                if ($tabla[$posicionY + $j][$posicionZ] != $espacio) {
+                                    $bien = false;
+                                    break;
+                                }
+                            }
+                            if ($bien) {
+                                for ($j = 0; $j < $barcos[$i]; $j++) {
+                                    $tabla[$posicionY + $j][$posicionZ] = "B".$barcos[$i];
+                                }
+                                $salirPosicion = false;
+                            }
+                            break;
+
+                        case 3: // Horizontal hacia la izquierda
+                            if ($posicionZ - ($barcos[$i] - 1) < 1) {
+                                continue;
+                            }
+                            for ($j = 0; $j < $barcos[$i]; $j++) {
+                                if ($tabla[$posicionY][$posicionZ - $j] != $espacio) {
+                                    $bien = false;
+                                    break;
+                                }
+                            }
+                            if ($bien) {
+                                for ($j = 0; $j < $barcos[$i]; $j++) {
+                                    $tabla[$posicionY][$posicionZ - $j] = "B".$barcos[$i];
+                                }
+                                $salirPosicion = false;
+                            }
+                            break;
+                    }
+                } else{
+                    $tabla[$posicionY][$posicionZ] = "B".$barcos[$i];
+                    $salirPosicion = false;
+                }
+                
+            }
+        }
+        
+    }
+
+    for ($i = 0; $i <= $filas; $i++) {
+        echo "<tr>";
+
+        for ($j = 0; $j <= $columnas; $j++) {
+            echo "<td style='border: 1px solid black; border-collapse: collapse;'>" . $tabla[$i][$j] . "</td>";
+        }
+
+        echo "</tr>";
+    }
+
+    ?>
+
+</table>
+
     
 </body>
 </html>
