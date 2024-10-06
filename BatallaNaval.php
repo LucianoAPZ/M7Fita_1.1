@@ -35,104 +35,118 @@
     }
 
     $fragata = 1;
-    $submarí = 2;
+    $submari = 2;
     $destructor = 3;
     $portaavions = 4;
-    $barcos = array($fragata, $submarí, $destructor, $portaavions);
+    $barcos = array($fragata, $fragata, $fragata, $fragata, $submari, $submari, $submari, $destructor, $destructor, $portaavions);
 
-    for ($i = 0; $i <= count($barcos)-1; $i++){
-
+    for ($i = 0; $i <= count($barcos) - 1; $i++) {
         $salirPosicion = true;
-        while ($salirPosicion){
+        $intentos = 0;
+    
+        while ($salirPosicion) {
             $posicionY = mt_rand(1, 10);
             $posicionZ = mt_rand(1, 10);
             $bien = true; 
-
-            if ($tabla[$posicionY][$posicionZ] == $espacio ){
-                if ($barcos[$i] != 1){
+    
+            if ($tabla[$posicionY][$posicionZ] == $espacio && 
+                $tabla[$posicionY + 1][$posicionZ] == $espacio && 
+                $tabla[$posicionY - 1][$posicionZ] == $espacio && 
+                $tabla[$posicionY][$posicionZ + 1] == $espacio && 
+                $tabla[$posicionY][$posicionZ - 1] == $espacio) {
+    
+                if ($barcos[$i] != 1) {
                     $direccion = mt_rand(0, 3);
                     switch ($direccion) {
-                        case 0: 
-                            if ($posicionY - ($barcos[$i] - 1) < 1) { 
-                                continue;
-                            }
+                        case 0:
+                            if ($posicionY - ($barcos[$i] - 1) < 1) continue;
                             for ($j = 0; $j < $barcos[$i]; $j++) {
-                                if ($tabla[$posicionY - $j][$posicionZ] != $espacio) {
-                                    $bien = false; // No hay espacio
+                                if ($tabla[$posicionY - $j][$posicionZ] != $espacio || 
+                                    $tabla[$posicionY - $j][$posicionZ + 1] != $espacio || 
+                                    $tabla[$posicionY - $j][$posicionZ - 1] != $espacio || 
+                                    $tabla[($posicionY - $j) - 1][$posicionZ] != $espacio) {
+                                    $bien = false;
                                     break;
                                 }
                             }
                             if ($bien) {
                                 for ($j = 0; $j < $barcos[$i]; $j++) {
-                                    $tabla[$posicionY - $j][$posicionZ] = "B".$barcos[$i]; 
+                                    $tabla[$posicionY - $j][$posicionZ] = "B" . $barcos[$i]; 
                                 }
                                 $salirPosicion = false; 
                             }
                             break;
-
+    
                         case 1:
-                            if ($posicionZ + ($barcos[$i] - 1) > 10) {
-                                continue;
-                            }
+                            if ($posicionZ + ($barcos[$i] - 1) > 10) continue;
                             for ($j = 0; $j < $barcos[$i]; $j++) {
-                                if ($tabla[$posicionY][$posicionZ + $j] != $espacio) {
+                                if ($tabla[$posicionY][$posicionZ + $j] != $espacio ||
+                                    $tabla[$posicionY + 1][$posicionZ + $j] != $espacio ||
+                                    $tabla[$posicionY - 1][$posicionZ + $j] != $espacio || 
+                                    $tabla[$posicionY][($posicionZ + $j) + 1] != $espacio) {
                                     $bien = false;
                                     break;
                                 }
                             }
                             if ($bien) {
                                 for ($j = 0; $j < $barcos[$i]; $j++) {
-                                    $tabla[$posicionY][$posicionZ + $j] = "B".$barcos[$i];
+                                    $tabla[$posicionY][$posicionZ + $j] = "B" . $barcos[$i];
                                 }
                                 $salirPosicion = false;
                             }
                             break;
-
-                        case 2: // Vertical hacia abajo
-                            if ($posicionY + ($barcos[$i] - 1) > 10) {
-                                continue;
-                            }
+    
+                        case 2:
+                            if ($posicionY + ($barcos[$i] - 1) > 10) continue;
                             for ($j = 0; $j < $barcos[$i]; $j++) {
-                                if ($tabla[$posicionY + $j][$posicionZ] != $espacio) {
+                                if ($tabla[$posicionY + $j][$posicionZ] != $espacio ||
+                                    $tabla[$posicionY + $j][$posicionZ + 1] != $espacio ||
+                                    $tabla[$posicionY + $j][$posicionZ - 1] != $espacio ||
+                                    $tabla[($posicionY + $j) + 1][$posicionZ] != $espacio) {
                                     $bien = false;
                                     break;
                                 }
                             }
                             if ($bien) {
                                 for ($j = 0; $j < $barcos[$i]; $j++) {
-                                    $tabla[$posicionY + $j][$posicionZ] = "B".$barcos[$i];
+                                    $tabla[$posicionY + $j][$posicionZ] = "B" . $barcos[$i];
                                 }
                                 $salirPosicion = false;
                             }
                             break;
-
-                        case 3: // Horizontal hacia la izquierda
-                            if ($posicionZ - ($barcos[$i] - 1) < 1) {
-                                continue;
-                            }
+    
+                        case 3:
+                            if ($posicionZ - ($barcos[$i] - 1) < 1) continue;
                             for ($j = 0; $j < $barcos[$i]; $j++) {
-                                if ($tabla[$posicionY][$posicionZ - $j] != $espacio) {
+                                if ($tabla[$posicionY][$posicionZ - $j] != $espacio ||
+                                    $tabla[$posicionY + 1][$posicionZ - $j] != $espacio ||
+                                    $tabla[$posicionY - 1][$posicionZ - $j] != $espacio ||
+                                    $tabla[$posicionY][($posicionZ - $j) - 1] != $espacio) {
                                     $bien = false;
                                     break;
                                 }
                             }
                             if ($bien) {
                                 for ($j = 0; $j < $barcos[$i]; $j++) {
-                                    $tabla[$posicionY][$posicionZ - $j] = "B".$barcos[$i];
+                                    $tabla[$posicionY][$posicionZ - $j] = "B" . $barcos[$i];
                                 }
                                 $salirPosicion = false;
                             }
                             break;
                     }
-                } else{
-                    $tabla[$posicionY][$posicionZ] = "B".$barcos[$i];
+                } else {
+                    $tabla[$posicionY][$posicionZ] = "B" . $barcos[$i];
                     $salirPosicion = false;
                 }
-                
+            }
+            
+            $intentos++;
+            if ($intentos > 100) {
+                break;
             }
         }
-        
     }
+    
 
     for ($i = 0; $i <= $filas; $i++) {
         echo "<tr>";
@@ -148,6 +162,5 @@
 
 </table>
 
-    
 </body>
 </html>
